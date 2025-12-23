@@ -1,0 +1,39 @@
+---
+alwaysApply: true
+---
+# Правила разработки Vue.js
+
+## Composition API
+- Использовать Composition API вместо Options API
+- Организовывать логику в composables
+- Типизировать возвращаемые значения composables
+
+## Структура компонентов
+- Использовать SFC (Single File Components)
+- Разделять логику, шаблон и стили
+- Использовать PascalCase для имен компонентов
+
+## Реактивность
+- Использовать ref() для примитивов
+- Использовать reactive() для объектов
+- Оптимизировать computed свойства
+
+## Lifecycle
+- Очищать эффекты в onUnmounted
+- Использовать onMounted для инициализации
+- Избегать side effects в computed
+
+## Производительность
+- Использовать v-memo для тяжелых компонентов
+- Лениво загружать компоненты через defineAsyncComponent
+- Оптимизировать v-for с ключами
+
+## Стилизация
+- Использовать scoped стили
+- Организовывать CSS переменные
+- Избегать deep selectors
+
+## TypeScript
+- Типизировать props через defineProps<T>
+- Определять emits через defineEmits<T>
+- Использовать generic types для composables

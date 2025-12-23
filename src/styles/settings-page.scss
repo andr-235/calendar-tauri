@@ -1,0 +1,84 @@
+.settings-page {
+  padding: var(--spacing-lg);
+  max-width: 600px;
+}
+
+.setting-item {
+  margin-bottom: var(--spacing-sm);
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  label {
+    display: block;
+    margin-bottom: var(--spacing-xs);
+    font-weight: var(--font-weight-medium);
+  }
+
+  select {
+    width: 100%;
+    padding: var(--spacing-xs);
+    border: 1px solid var(--border-color-medium);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-base);
+    background-color: white;
+  }
+
+  input[type="checkbox"] {
+    margin-right: var(--spacing-xs);
+  }
+}
+
+.db-path-input {
+  display: flex;
+  gap: var(--spacing-xs);
+
+  input {
+    flex: 1;
+    padding: var(--spacing-xs);
+    border: 1px solid var(--border-color-medium);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-base);
+    background-color: white;
+  }
+}
+
+.btn-select-path {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: 1px solid var(--border-color-medium);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-primary);
+  color: white;
+  cursor: pointer;
+  font-size: var(--font-size-base);
+  white-space: nowrap;
+
+  &:hover:not(:disabled) {
+    background-color: var(--color-primary-dark);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .setting-item {
+    select {
+      background-color: rgba(255, 255, 255, 0.1);
+      border-color: var(--border-color-medium);
+      color: white;
+    }
+  }
+
+  .db-path-input {
+    input {
+      background-color: rgba(255, 255, 255, 0.1);
+      border-color: var(--border-color-medium);
+      color: white;
+    }
+  }
+}
+

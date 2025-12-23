@@ -1,0 +1,26 @@
+.list {
+  padding: var(--spacing-sm, 1rem);
+}
+
+.list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: var(--spacing-sm, 1rem);
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.list-item-content {
+  flex: 1;
+}
+
+.list-item-actions {
+  display: flex;
+  gap: var(--spacing-xs, 0.5rem);
+  margin-left: var(--spacing-sm, 1rem);
+}
+

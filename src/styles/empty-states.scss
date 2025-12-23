@@ -1,0 +1,10 @@
+.empty-state {
+  padding: var(--spacing-lg, 2rem);
+  text-align: center;
+
+  p {
+    margin-bottom: var(--spacing-sm, 1rem);
+    color: var(--text-secondary, #6b7280);
+  }
+}
+
