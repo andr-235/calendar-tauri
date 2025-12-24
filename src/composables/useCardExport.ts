@@ -28,13 +28,7 @@ export function useCardExport(printCardRef: Ref<{ $el: HTMLElement } | null>) {
   }
 
   const printCard = async (card: ControlCard) => {
-    // #region agent log
-    fetch('http://127.0.0.1:7244/ingest/8366886c-c43b-42f3-87a2-defecea0a34d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'useCardExport.ts:printCard',message:'printCard called',data:{cardId:card.id,hasRef:!!printCardRef.value,hasEl:!!printCardRef.value?.$el},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'A'})}).catch(()=>{});
-    // #endregion
     if (!printCardRef.value?.$el) {
-      // #region agent log
-      fetch('http://127.0.0.1:7244/ingest/8366886c-c43b-42f3-87a2-defecea0a34d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'useCardExport.ts:printCard',message:'printCardRef.value.$el is null',data:{hasRef:!!printCardRef.value,refValue:printCardRef.value},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'A'})}).catch(()=>{});
-      // #endregion
       return
     }
 
@@ -87,9 +81,6 @@ export function useCardExport(printCardRef: Ref<{ $el: HTMLElement } | null>) {
         iframeDoc.write(printContent)
         iframeDoc.close()
         
-        // #region agent log
-        fetch('http://127.0.0.1:7244/ingest/8366886c-c43b-42f3-87a2-defecea0a34d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'useCardExport.ts:printCard',message:'iframe created, calling print',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'A'})}).catch(()=>{});
-        // #endregion
         
         setTimeout(() => {
           iframe.contentWindow?.print()
@@ -99,9 +90,6 @@ export function useCardExport(printCardRef: Ref<{ $el: HTMLElement } | null>) {
         }, 250)
       }
     } catch (error) {
-      // #region agent log
-      fetch('http://127.0.0.1:7244/ingest/8366886c-c43b-42f3-87a2-defecea0a34d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'useCardExport.ts:printCard',message:'Error in printCard',data:{errorMessage:error instanceof Error?error.message:String(error)},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'C'})}).catch(()=>{});
-      // #endregion
       console.error('Ошибка печати:', error)
       alert('Ошибка при печати')
     } finally {
@@ -110,30 +98,18 @@ export function useCardExport(printCardRef: Ref<{ $el: HTMLElement } | null>) {
   }
 
   const exportAsImage = async (card: ControlCard) => {
-    // #region agent log
-    fetch('http://127.0.0.1:7244/ingest/8366886c-c43b-42f3-87a2-defecea0a34d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'useCardExport.ts:exportAsImage',message:'exportAsImage called',data:{cardId:card.id,hasRef:!!printCardRef.value,hasEl:!!printCardRef.value?.$el},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'A'})}).catch(()=>{});
-    // #endregion
     if (!printCardRef.value?.$el) {
-      // #region agent log
-      fetch('http://127.0.0.1:7244/ingest/8366886c-c43b-42f3-87a2-defecea0a34d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'useCardExport.ts:exportAsImage',message:'printCardRef.value.$el is null',data:{hasRef:!!printCardRef.value},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'A'})}).catch(()=>{});
-      // #endregion
       return
     }
 
     try {
       exporting.value = true
-      // #region agent log
-      fetch('http://127.0.0.1:7244/ingest/8366886c-c43b-42f3-87a2-defecea0a34d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'useCardExport.ts:exportAsImage',message:'Starting html2canvas',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'C'})}).catch(()=>{});
-      // #endregion
       const canvas = await html2canvas(printCardRef.value.$el, {
         backgroundColor: '#ffffff',
         scale: 2,
         logging: false,
         useCORS: true
       })
-      // #region agent log
-      fetch('http://127.0.0.1:7244/ingest/8366886c-c43b-42f3-87a2-defecea0a34d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'useCardExport.ts:exportAsImage',message:'html2canvas completed',data:{canvasWidth:canvas.width,canvasHeight:canvas.height},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'C'})}).catch(()=>{});
-      // #endregion
 
       const blob = await new Promise<Blob | null>((resolve) => {
         canvas.toBlob((blob) => {
@@ -142,15 +118,9 @@ export function useCardExport(printCardRef: Ref<{ $el: HTMLElement } | null>) {
       })
 
       if (!blob) {
-        // #region agent log
-        fetch('http://127.0.0.1:7244/ingest/8366886c-c43b-42f3-87a2-defecea0a34d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'useCardExport.ts:exportAsImage',message:'Blob is null',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'C'})}).catch(()=>{});
-        // #endregion
         throw new Error('Failed to create image blob')
       }
 
-      // #region agent log
-      fetch('http://127.0.0.1:7244/ingest/8366886c-c43b-42f3-87a2-defecea0a34d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'useCardExport.ts:exportAsImage',message:'Blob created, opening save dialog',data:{blobSize:blob.size},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'C'})}).catch(()=>{});
-      // #endregion
 
       const filePath = await save({
         defaultPath: getFileName(card, 'png'),
@@ -161,14 +131,8 @@ export function useCardExport(printCardRef: Ref<{ $el: HTMLElement } | null>) {
         const arrayBuffer = await blob.arrayBuffer()
         const uint8Array = new Uint8Array(arrayBuffer)
         await writeFile(filePath, uint8Array)
-        // #region agent log
-        fetch('http://127.0.0.1:7244/ingest/8366886c-c43b-42f3-87a2-defecea0a34d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'useCardExport.ts:exportAsImage',message:'File saved successfully',data:{filePath},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'C'})}).catch(()=>{});
-        // #endregion
       }
     } catch (error) {
-      // #region agent log
-      fetch('http://127.0.0.1:7244/ingest/8366886c-c43b-42f3-87a2-defecea0a34d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'useCardExport.ts:exportAsImage',message:'Error in exportAsImage',data:{errorMessage:error instanceof Error?error.message:String(error),errorStack:error instanceof Error?error.stack:undefined},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'C'})}).catch(()=>{});
-      // #endregion
       console.error('Ошибка экспорта изображения:', error)
       alert('Ошибка при сохранении изображения')
     } finally {
@@ -177,13 +141,7 @@ export function useCardExport(printCardRef: Ref<{ $el: HTMLElement } | null>) {
   }
 
   const exportAsPDF = async (card: ControlCard) => {
-    // #region agent log
-    fetch('http://127.0.0.1:7244/ingest/8366886c-c43b-42f3-87a2-defecea0a34d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'useCardExport.ts:exportAsPDF',message:'exportAsPDF called',data:{cardId:card.id,hasRef:!!printCardRef.value,hasEl:!!printCardRef.value?.$el},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'A'})}).catch(()=>{});
-    // #endregion
     if (!printCardRef.value?.$el) {
-      // #region agent log
-      fetch('http://127.0.0.1:7244/ingest/8366886c-c43b-42f3-87a2-defecea0a34d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'useCardExport.ts:exportAsPDF',message:'printCardRef.value.$el is null',data:{hasRef:!!printCardRef.value},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'A'})}).catch(()=>{});
-      // #endregion
       return
     }
 
@@ -213,9 +171,6 @@ export function useCardExport(printCardRef: Ref<{ $el: HTMLElement } | null>) {
 
       pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, imgHeight * ratio)
       
-      // #region agent log
-      fetch('http://127.0.0.1:7244/ingest/8366886c-c43b-42f3-87a2-defecea0a34d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'useCardExport.ts:exportAsPDF',message:'PDF created, opening save dialog',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'C'})}).catch(()=>{});
-      // #endregion
 
       const pdfBlob = pdf.output('blob')
       const filePath = await save({
@@ -227,14 +182,8 @@ export function useCardExport(printCardRef: Ref<{ $el: HTMLElement } | null>) {
         const arrayBuffer = await pdfBlob.arrayBuffer()
         const uint8Array = new Uint8Array(arrayBuffer)
         await writeFile(filePath, uint8Array)
-        // #region agent log
-        fetch('http://127.0.0.1:7244/ingest/8366886c-c43b-42f3-87a2-defecea0a34d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'useCardExport.ts:exportAsPDF',message:'PDF saved successfully',data:{filePath},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'C'})}).catch(()=>{});
-        // #endregion
       }
     } catch (error) {
-      // #region agent log
-      fetch('http://127.0.0.1:7244/ingest/8366886c-c43b-42f3-87a2-defecea0a34d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'useCardExport.ts:exportAsPDF',message:'Error in exportAsPDF',data:{errorMessage:error instanceof Error?error.message:String(error),errorStack:error instanceof Error?error.stack:undefined},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'C'})}).catch(()=>{});
-      // #endregion
       console.error('Ошибка экспорта PDF:', error)
       alert('Ошибка при сохранении PDF')
     } finally {
@@ -243,9 +192,6 @@ export function useCardExport(printCardRef: Ref<{ $el: HTMLElement } | null>) {
   }
 
   const exportAsWord = async (card: ControlCard) => {
-    // #region agent log
-    fetch('http://127.0.0.1:7244/ingest/8366886c-c43b-42f3-87a2-defecea0a34d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'useCardExport.ts:exportAsWord',message:'exportAsWord called',data:{cardId:card.id},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'A'})}).catch(()=>{});
-    // #endregion
     try {
       exporting.value = true
 
@@ -355,9 +301,6 @@ export function useCardExport(printCardRef: Ref<{ $el: HTMLElement } | null>) {
       })
 
       const blob = await Packer.toBlob(doc)
-      // #region agent log
-      fetch('http://127.0.0.1:7244/ingest/8366886c-c43b-42f3-87a2-defecea0a34d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'useCardExport.ts:exportAsWord',message:'Packer.toBlob completed, opening save dialog',data:{blobSize:blob.size},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'C'})}).catch(()=>{});
-      // #endregion
 
       const filePath = await save({
         defaultPath: getFileName(card, 'docx'),
@@ -368,14 +311,8 @@ export function useCardExport(printCardRef: Ref<{ $el: HTMLElement } | null>) {
         const arrayBuffer = await blob.arrayBuffer()
         const uint8Array = new Uint8Array(arrayBuffer)
         await writeFile(filePath, uint8Array)
-        // #region agent log
-        fetch('http://127.0.0.1:7244/ingest/8366886c-c43b-42f3-87a2-defecea0a34d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'useCardExport.ts:exportAsWord',message:'Word document saved successfully',data:{filePath},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'C'})}).catch(()=>{});
-        // #endregion
       }
     } catch (error) {
-      // #region agent log
-      fetch('http://127.0.0.1:7244/ingest/8366886c-c43b-42f3-87a2-defecea0a34d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'useCardExport.ts:exportAsWord',message:'Error in exportAsWord',data:{errorMessage:error instanceof Error?error.message:String(error),errorStack:error instanceof Error?error.stack:undefined},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'C'})}).catch(()=>{});
-      // #endregion
       console.error('Ошибка экспорта Word:', error)
       alert('Ошибка при сохранении Word документа')
     } finally {
@@ -384,13 +321,7 @@ export function useCardExport(printCardRef: Ref<{ $el: HTMLElement } | null>) {
   }
 
   const copyToClipboard = async (card: ControlCard) => {
-    // #region agent log
-    fetch('http://127.0.0.1:7244/ingest/8366886c-c43b-42f3-87a2-defecea0a34d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'useCardExport.ts:copyToClipboard',message:'copyToClipboard called',data:{cardId:card.id,hasRef:!!printCardRef.value,hasEl:!!printCardRef.value?.$el},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'A'})}).catch(()=>{});
-    // #endregion
     if (!printCardRef.value?.$el) {
-      // #region agent log
-      fetch('http://127.0.0.1:7244/ingest/8366886c-c43b-42f3-87a2-defecea0a34d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'useCardExport.ts:copyToClipboard',message:'printCardRef.value.$el is null',data:{hasRef:!!printCardRef.value},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'A'})}).catch(()=>{});
-      // #endregion
       return
     }
 
@@ -413,14 +344,8 @@ ${card.createdAt ? `Дата создания: ${formatDate(card.createdAt)}` : 
       })
 
       await navigator.clipboard.write([clipboardItem])
-      // #region agent log
-      fetch('http://127.0.0.1:7244/ingest/8366886c-c43b-42f3-87a2-defecea0a34d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'useCardExport.ts:copyToClipboard',message:'Clipboard write successful',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'C'})}).catch(()=>{});
-      // #endregion
       alert('Карточка скопирована в буфер обмена')
     } catch (error) {
-      // #region agent log
-      fetch('http://127.0.0.1:7244/ingest/8366886c-c43b-42f3-87a2-defecea0a34d',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'useCardExport.ts:copyToClipboard',message:'Error in copyToClipboard',data:{errorMessage:error instanceof Error?error.message:String(error),errorStack:error instanceof Error?error.stack:undefined},timestamp:Date.now(),sessionId:'debug-session',runId:'post-fix',hypothesisId:'C'})}).catch(()=>{});
-      // #endregion
       console.error('Ошибка копирования:', error)
       const textContent = `
 Контрольная карточка №${card.cardNumber}/${card.year}

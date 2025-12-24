@@ -15,7 +15,8 @@ where
     F: FnOnce(&mut Database) -> Result<T, String>,
 {
     let mut db = DB.lock().map_err(|e| e.to_string())?;
-    f(&mut db)
+    let result = f(&mut db);
+    result
 }
 
 fn with_db_immut<F, T>(f: F) -> Result<T, String>
@@ -65,6 +66,14 @@ fn create_control_card(
     reporter: String,
     summary: String,
     document_reference: String,
+    return_to: Option<String>,
+    execution_deadline: Option<String>,
+    execution_period_type: Option<String>,
+    extended_deadline: Option<String>,
+    resolution: Option<String>,
+    department: Option<String>,
+    controller: Option<String>,
+    controller_user_id: Option<i64>,
     token: String,
 ) -> Result<i64, String> {
     let claims = verify_token(&token)?;
@@ -90,7 +99,17 @@ fn create_control_card(
 
         let executor = executor_user.username;
 
-        db.create_control_card(
+        // Проверяем controller_user_id если указан
+        if let Some(controller_id) = controller_user_id {
+            let user = db.get_user_by_id(controller_id)?;
+            if let Some(ref u) = user {
+                if u.role != "controller" {
+                    return Err("Controller must be a user with role 'controller'".to_string());
+                }
+            }
+        }
+
+        let result = db.create_control_card(
             card_number,
             year,
             &executor,
@@ -99,7 +118,16 @@ fn create_control_card(
             &document_reference,
             Some(user_id),
             Some(executor_user_id),
-        )
+            return_to.as_deref(),
+            execution_deadline.as_deref(),
+            execution_period_type.as_deref(),
+            extended_deadline.as_deref(),
+            resolution.as_deref(),
+            department.as_deref(),
+            controller.as_deref(),
+            controller_user_id,
+        )?;
+        Ok(result)
     })
 }
 
@@ -152,6 +180,14 @@ fn update_control_card(
     reporter: String,
     summary: String,
     document_reference: String,
+    return_to: Option<String>,
+    execution_deadline: Option<String>,
+    execution_period_type: Option<String>,
+    extended_deadline: Option<String>,
+    resolution: Option<String>,
+    department: Option<String>,
+    controller: Option<String>,
+    controller_user_id: Option<i64>,
     token: String,
 ) -> Result<usize, String> {
     let claims = verify_token(&token)?;
@@ -177,6 +213,16 @@ fn update_control_card(
 
         let executor = executor_user.username;
 
+        // Проверяем controller_user_id если указан
+        if let Some(controller_id) = controller_user_id {
+            let user = db.get_user_by_id(controller_id)?;
+            if let Some(ref u) = user {
+                if u.role != "controller" {
+                    return Err("Controller must be a user with role 'controller'".to_string());
+                }
+            }
+        }
+
         db.update_control_card(
             id,
             card_number,
@@ -187,6 +233,14 @@ fn update_control_card(
             &document_reference,
             Some(user_id),
             Some(executor_user_id),
+            return_to.as_deref(),
+            execution_deadline.as_deref(),
+            execution_period_type.as_deref(),
+            extended_deadline.as_deref(),
+            resolution.as_deref(),
+            department.as_deref(),
+            controller.as_deref(),
+            controller_user_id,
         )
     })
 }
@@ -364,6 +418,21 @@ fn get_users_for_executor_selection(token: String) -> Result<Vec<User>, String> 
 }
 
 #[tauri::command]
+fn get_users_for_controller_selection(token: String) -> Result<Vec<User>, String> {
+    let claims = verify_token(&token)?;
+    // Только admin или controller могут выбирать контроллеров
+    if claims.role != "admin" && claims.role != "controller" {
+        return Err("Only admin or controller can select controllers".to_string());
+    }
+
+    with_db_immut(|db| {
+        // Получаем всех пользователей с ролью 'controller'
+        let all_users = db.get_all_users()?;
+        Ok(all_users.into_iter().filter(|u| u.role == "controller").collect())
+    })
+}
+
+#[tauri::command]
 fn update_user(
     id: i64,
     username: String,
@@ -466,6 +535,7 @@ pub fn run() {
             has_any_users,
             get_all_users,
             get_users_for_executor_selection,
+            get_users_for_controller_selection,
             update_user,
             delete_user,
             change_user_password

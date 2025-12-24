@@ -1,7 +1,7 @@
+@use './mixins';
+
 .calendar-header-section {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  @include mixins.flex-between;
   margin-bottom: var(--spacing-md);
 
   h1 {
@@ -10,26 +10,12 @@
 }
 
 .events-panel {
-  background: var(--bg-primary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
+  @include mixins.panel;
   margin-top: var(--spacing-lg);
-  overflow: hidden;
 }
 
 .events-panel-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: var(--spacing-sm) var(--spacing-md);
-  border-bottom: 1px solid var(--border-color);
-  background: var(--bg-secondary);
-
-  h2 {
-    margin: 0;
-    font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-semibold);
-  }
+  @include mixins.panel-header;
 }
 
 .no-events {
@@ -102,27 +88,12 @@
 }
 
 .card-item {
-  background: var(--bg-primary);
-  border-radius: var(--radius-md);
+  @include mixins.card;
   padding: 0;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  transition: box-shadow var(--transition-fast), transform var(--transition-fast);
-  overflow: hidden;
-
-  &:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    transform: translateY(-1px);
-  }
 }
 
 .card-item-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  padding: var(--spacing-lg);
-  padding-bottom: var(--spacing-md);
-  gap: var(--spacing-md);
-  border-bottom: 1px solid var(--border-color-light);
+  @include mixins.card-header;
 }
 
 .card-header-content {

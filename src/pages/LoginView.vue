@@ -5,6 +5,7 @@ import { useAuthStore } from '../stores/auth'
 import DatabasePathSelector from '../components/DatabasePathSelector.vue'
 import { isTauri, safeInvoke } from '../utils/tauri'
 import '../styles/forms.scss'
+import '../styles/login.scss'
 
 const router = useRouter()
 const route = useRoute()
@@ -48,20 +49,29 @@ onMounted(async () => {
               await checkUsers()
               showDbSelector.value = false
             } else {
-              // Не удалось подключиться, показываем селектор
+              // Не удалось подключиться, показываем селектор (не первый запуск)
+              isFirstRun.value = false
               showDbSelector.value = true
             }
           } else {
+            // Нет сохраненного пути - первый запуск
+            isFirstRun.value = true
             showDbSelector.value = true
           }
         } catch {
+          // Ошибка парсинга - первый запуск
+          isFirstRun.value = true
           showDbSelector.value = true
         }
       } else {
+        // Нет сохраненных настроек - первый запуск
+        isFirstRun.value = true
         showDbSelector.value = true
       }
     }
   } catch (err) {
+    // При ошибке считаем, что это первый запуск
+    isFirstRun.value = true
     showDbSelector.value = true
   }
 })
@@ -202,45 +212,4 @@ const handleLogin = async () => {
   </div>
 </template>
 
-<style lang="scss" scoped>
-.login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  padding: 20px;
-}
-
-.login-form {
-  width: 100%;
-  max-width: 400px;
-  background: var(--bg-secondary, #fff);
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-
-  h1 {
-    margin-bottom: 1.5rem;
-    text-align: center;
-  }
-
-  .error-message {
-    color: #dc3545;
-    margin-bottom: 1rem;
-    padding: 0.5rem;
-    background: #f8d7da;
-    border-radius: 4px;
-    font-size: 0.9rem;
-  }
-
-  .info-message {
-    color: #0c5460;
-    margin-bottom: 1rem;
-    padding: 0.5rem;
-    background: #d1ecf1;
-    border-radius: 4px;
-    font-size: 0.9rem;
-  }
-}
-</style>
 

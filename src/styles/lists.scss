@@ -1,3 +1,5 @@
+@use './mixins';
+
 .list {
   padding: var(--spacing-sm, 1rem);
 }

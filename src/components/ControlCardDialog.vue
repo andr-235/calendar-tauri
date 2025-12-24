@@ -3,6 +3,7 @@ import { ref, computed, watch } from 'vue'
 import type { ControlCard } from '../types/calendar'
 import type { User } from '../types/auth'
 import { useControlCards } from '../composables/useControlCards'
+import { EXECUTION_PERIOD_TYPES, DEPARTMENTS } from '../constants/calendar'
 
 interface Props {
   modelValue: boolean
@@ -18,7 +19,7 @@ const emit = defineEmits<{
   'save': [card: Omit<ControlCard, 'id' | 'createdAt'> & { executorUserId: number }]
 }>()
 
-const { getNextCardNumber, getUsersForExecutorSelection } = useControlCards()
+const { getNextCardNumber, getUsersForExecutorSelection, getUsersForControllerSelection } = useControlCards()
 
 const cardNumber = ref<number>(1)
 const year = ref<number>(new Date().getFullYear())
@@ -27,6 +28,17 @@ const users = ref<User[]>([])
 const reporter = ref('')
 const summary = ref('')
 const documentReference = ref('')
+const returnTo = ref('')
+const executionDeadline = ref('')
+const executionPeriodType = ref<'daily' | 'weekly' | 'monthly' | ''>('')
+const extendedDeadline = ref('')
+const resolution = ref('')
+const department = ref('')
+const controller = ref('')
+const controllerUserId = ref<number | null>(null)
+const controllerUsers = ref<User[]>([])
+const customDepartment = ref(false)
+const customController = ref(false)
 
 const isEditMode = computed(() => !!props.card)
 
@@ -40,6 +52,7 @@ const loadNextCardNumber = async () => {
 const loadUsers = async () => {
   try {
     users.value = await getUsersForExecutorSelection()
+    controllerUsers.value = await getUsersForControllerSelection()
   } catch (error) {
     console.error('Ошибка загрузки пользователей:', error)
   }
@@ -53,6 +66,16 @@ const resetForm = async () => {
     reporter.value = props.card.reporter
     summary.value = props.card.summary
     documentReference.value = props.card.documentReference
+    returnTo.value = props.card.returnTo ?? ''
+    executionDeadline.value = props.card.executionDeadline ?? ''
+    executionPeriodType.value = props.card.executionPeriodType ?? ''
+    extendedDeadline.value = props.card.extendedDeadline ?? ''
+    resolution.value = props.card.resolution ?? ''
+    department.value = props.card.department ?? ''
+    controller.value = props.card.controller ?? ''
+    controllerUserId.value = props.card.controllerUserId ?? null
+    customDepartment.value = props.card.department ? !DEPARTMENTS.includes(props.card.department as any) : false
+    customController.value = props.card.controller ? !controllerUsers.value.some(u => u.username === props.card?.controller) : false
   } else {
     year.value = new Date().getFullYear()
     await loadNextCardNumber()
@@ -60,6 +83,16 @@ const resetForm = async () => {
     reporter.value = ''
     summary.value = ''
     documentReference.value = ''
+    returnTo.value = ''
+    executionDeadline.value = ''
+    executionPeriodType.value = ''
+    extendedDeadline.value = ''
+    resolution.value = ''
+    department.value = ''
+    controller.value = ''
+    controllerUserId.value = null
+    customDepartment.value = false
+    customController.value = false
   }
 }
 
@@ -89,6 +122,9 @@ const handleSave = () => {
   
   const executorUser = users.value.find(u => u.id === executorUserId.value)
   const now = new Date().toISOString()
+  const finalController = customController.value ? controller.value.trim() : (controllerUsers.value.find(u => u.id === controllerUserId.value)?.username || '')
+  const finalDepartment = customDepartment.value ? department.value.trim() : department.value.trim()
+  
   emit('save', {
     cardNumber: cardNumber.value,
     year: year.value,
@@ -97,6 +133,14 @@ const handleSave = () => {
     reporter: reporter.value.trim(),
     summary: summary.value.trim(),
     documentReference: documentReference.value.trim(),
+    returnTo: returnTo.value.trim() || undefined,
+    executionDeadline: executionDeadline.value.trim() || undefined,
+    executionPeriodType: executionPeriodType.value || undefined,
+    extendedDeadline: extendedDeadline.value.trim() || undefined,
+    resolution: resolution.value.trim() || undefined,
+    department: finalDepartment || undefined,
+    controller: finalController || undefined,
+    controllerUserId: controllerUserId.value ?? undefined,
     startDate: now,
     endDate: now
   })
@@ -198,6 +242,136 @@ const isValid = computed(() => {
             placeholder="Введите ссылку на документ"
             required
           />
+        </div>
+
+        <div class="form-group">
+          <label for="returnTo">По исполнению подлежит возврату в</label>
+          <input
+            id="returnTo"
+            v-model="returnTo"
+            type="text"
+            placeholder="Введите, куда возвращать"
+          />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="executionDeadline">Срок исполнения</label>
+            <input
+              id="executionDeadline"
+              v-model="executionDeadline"
+              type="date"
+            />
+          </div>
+          <div class="form-group">
+            <label for="executionPeriodType">Тип периода</label>
+            <select
+              id="executionPeriodType"
+              v-model="executionPeriodType"
+            >
+              <option value="">Не указан</option>
+              <option
+                v-for="type in EXECUTION_PERIOD_TYPES"
+                :key="type.value"
+                :value="type.value"
+              >
+                {{ type.label }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="extendedDeadline">Срок продлен до</label>
+          <input
+            id="extendedDeadline"
+            v-model="extendedDeadline"
+            type="date"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="resolution">Резолюция</label>
+          <textarea
+            id="resolution"
+            v-model="resolution"
+            placeholder="Введите резолюцию"
+            rows="3"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="department">Подразделение</label>
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <select
+              v-if="!customDepartment"
+              id="department"
+              v-model="department"
+              @change="if (department === 'custom') { customDepartment = true; department = '' }"
+            >
+              <option value="">Выберите подразделение</option>
+              <option
+                v-for="dept in DEPARTMENTS"
+                :key="dept"
+                :value="dept"
+              >
+                {{ dept }}
+              </option>
+              <option value="custom">Другое...</option>
+            </select>
+            <input
+              v-else
+              id="department"
+              v-model="department"
+              type="text"
+              placeholder="Введите подразделение"
+            />
+            <button
+              v-if="customDepartment"
+              type="button"
+              @click="customDepartment = false; department = ''"
+              style="padding: 4px 8px; font-size: 12px;"
+            >
+              Выбрать из списка
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="controller">Контроль осуществляет</label>
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <select
+              v-if="!customController"
+              id="controller"
+              v-model.number="controllerUserId"
+              @change="if (controllerUserId === -1) { customController = true; controllerUserId = null; controller = '' }"
+            >
+              <option :value="null">Выберите контроллера</option>
+              <option
+                v-for="user in controllerUsers"
+                :key="user.id"
+                :value="user.id"
+              >
+                {{ user.username }}
+              </option>
+              <option :value="-1">Другое...</option>
+            </select>
+            <input
+              v-else
+              id="controller"
+              v-model="controller"
+              type="text"
+              placeholder="Введите контроллера"
+            />
+            <button
+              v-if="customController"
+              type="button"
+              @click="customController = false; controllerUserId = null; controller = ''"
+              style="padding: 4px 8px; font-size: 12px;"
+            >
+              Выбрать из списка
+            </button>
+          </div>
         </div>
       </div>
       

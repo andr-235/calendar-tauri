@@ -1,42 +1,17 @@
-.button {
-  padding: var(--spacing-xs, 0.5rem) var(--spacing-sm, 1rem);
-  border: none;
-  border-radius: var(--radius-sm, 4px);
-  font-size: var(--font-size-base, 1rem);
-  font-weight: var(--font-weight-medium, 500);
-  cursor: pointer;
-  transition: var(--transition-fast, background-color 0.2s);
+@use './mixins';
 
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
+.button {
+  @include mixins.button-base;
 }
 
 .button-primary {
-  background: var(--primary-color);
-  color: white;
-
-  &:hover:not(:disabled) {
-    background: var(--primary-hover);
-  }
+  @include mixins.button-primary;
 }
 
 .button-secondary {
-  background: var(--bg-secondary);
-  color: var(--text-primary);
-
-  &:hover {
-    background: var(--bg-tertiary);
-  }
+  @include mixins.button-secondary;
 }
 
 .button-danger {
-  background: var(--danger-color);
-  color: white;
-
-  &:hover {
-    background: var(--danger-hover);
-  }
+  @include mixins.button-danger;
 }
-

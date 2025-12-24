@@ -1,0 +1,225 @@
+# Правила дизайн-системы для интеграции Figma
+
+## 1. Определения токенов (Token Definitions)
+
+**Расположение:** `src/styles/variables.scss`
+
+**Формат:** CSS Custom Properties (CSS Variables)
+
+**Структура токенов:**
+```scss
+:root {
+  /* Primary colors */
+  --color-primary: #1976d2;
+  --color-primary-light: #64b5f6;
+  --color-primary-dark: #1565c0;
+  --color-primary-hover: #1565c0;
+
+  /* Status colors */
+  --color-danger: #ef4444;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+
+  /* Background colors */
+  --bg-primary: #fff;
+  --bg-secondary: #f3f4f6;
+  --bg-tertiary: #e5e7eb;
+
+  /* Spacing */
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 1.5rem;
+  --spacing-lg: 2rem;
+
+  /* Typography */
+  --font-size-base: 1rem;
+  --font-size-md: 1.125rem;
+  --font-size-lg: 1.25rem;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+```
+
+**Особенности:**
+- Поддержка темной темы через `@media (prefers-color-scheme: dark)`
+- Семантическое именование (primary, secondary, danger, success, warning)
+- CSS Variables для runtime изменения
+
+## 2. Библиотека компонентов (Component Library)
+
+**Расположение:** `src/components/`
+
+**Архитектура компонентов:**
+- Vue 3 Composition API
+- Single File Components (.vue)
+- TypeScript для типизации
+- Scoped стили
+
+**Структура компонента:**
+```vue
+<script setup lang="ts">
+// Импорт типов
+import type { ControlCard } from '../types/calendar'
+
+// Props с типизацией
+interface Props {
+  card: ControlCard
+}
+defineProps<Props>()
+
+// Emits с типизацией
+defineEmits<{
+  'update:modelValue': [value: Date]
+}>()
+</script>
+
+<template>
+  <!-- Шаблон с scoped стилями -->
+</template>
+```
+
+**Доступные компоненты:**
+- `Calendar.vue` - основной календарь
+- `Navbar.vue` - навигационная панель
+- `PrintCardView.vue` - вид контрольной карточки для печати
+- `ControlCardDialog.vue` - диалог создания карточки
+- `DatabasePathSelector.vue` - селектор пути к БД
+
+## 3. Фреймворки и библиотеки (Frameworks & Libraries)
+
+**UI Framework:** Vue 3 (Composition API)
+**Стилизация:** SCSS с CSS Modules подходом
+**Сборка:** Vite 6
+**Backend:** Tauri 2 (Rust)
+**State Management:** Pinia
+**Routing:** Vue Router 4
+
+**Зависимости:**
+```json
+{
+  "vue": "^3.5.13",
+  "pinia": "^2.3.1",
+  "vue-router": "^4.6.4",
+  "@tauri-apps/api": "^2",
+  "sass": "^1.97.1",
+  "typescript": "~5.6.2"
+}
+```
+
+## 4. Управление активами (Asset Management)
+
+**Расположение:** `src/assets/` и `public/`
+
+**Структура:**
+```
+src/
+  assets/
+    vue.svg
+public/
+  tauri.svg
+  vite.svg
+```
+
+**Оптимизация:**
+- Vite автоматически оптимизирует assets
+- SVG иконки импортируются напрямую
+- Нет CDN конфигурации
+
+## 5. Система иконок (Icon System)
+
+**Текущее состояние:** Отсутствует централизованная система иконок
+
+**Рекомендации для Figma:**
+- Создать компоненты иконок в Figma
+- Использовать SVG для иконок
+- Следовать конвенции именования: `icon-[name]-[size]`
+
+## 6. Подход к стилизации (Styling Approach)
+
+**Методология:** Utility-first с SCSS миксинами
+
+**Глобальные стили:** `src/styles/`
+- `variables.scss` - токены
+- `mixins.scss` - переиспользуемые миксины
+- `typography.scss` - типографика
+- `buttons.scss` - кнопки
+- `forms.scss` - формы
+
+**Пример миксина:**
+```scss
+@mixin button-primary {
+  @include button-base;
+  background: var(--color-primary);
+  color: white;
+
+  &:hover:not(:disabled) {
+    background: var(--color-primary-hover);
+  }
+}
+```
+
+**Адаптивность:**
+```scss
+@mixin mobile {
+  @media (max-width: 768px) {
+    @content;
+  }
+}
+```
+
+## 7. Структура проекта (Project Structure)
+
+```
+src/
+  components/          # UI компоненты
+  composables/         # Vue composables
+  constants/           # Константы
+  pages/              # Страницы приложения
+  router/             # Конфигурация роутинга
+  stores/             # Pinia stores
+  styles/             # Стили и дизайн-токены
+  types/              # TypeScript типы
+  utils/              # Утилиты
+```
+
+**Паттерны организации:**
+- Функциональная группировка файлов
+- Composables для переиспользуемой логики
+- Типы в отдельных файлах
+- Стили разбиты по компонентам
+
+## Правила интеграции Figma дизайнов
+
+### Цвета
+- Использовать только токены из `variables.scss`
+- Для новых цветов добавлять CSS Variables
+- Поддерживать темную тему
+
+### Компоненты
+- Создавать новые компоненты в `src/components/`
+- Использовать Composition API
+- Типизировать props и emits
+- Использовать scoped стили
+
+### Типографика
+- Использовать переменные размера шрифта
+- Вес шрифта через CSS Variables
+- Поддерживать иерархию заголовков
+
+### Отступы
+- Использовать spacing токены (--spacing-xs, --spacing-sm, etc.)
+- Избегать магических чисел
+- Поддерживать консистентность
+
+### Figma → Code маппинг
+```
+Figma Component → Vue SFC в src/components/
+Figma Styles → SCSS переменные в src/styles/
+Figma Colors → CSS Variables в variables.scss
+Figma Spacing → Spacing tokens в variables.scss
+```

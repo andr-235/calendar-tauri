@@ -1,0 +1,194 @@
+@use './variables';
+
+// Button mixins
+@mixin button-base {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  font-family: inherit;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+@mixin button-primary {
+  @include button-base;
+  background: var(--color-primary);
+  color: white;
+
+  &:hover:not(:disabled) {
+    background: var(--color-primary-hover);
+  }
+}
+
+@mixin button-secondary {
+  @include button-base;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+
+  &:hover:not(:disabled) {
+    background: var(--bg-tertiary);
+  }
+}
+
+@mixin button-danger {
+  @include button-base;
+  background: var(--color-danger);
+  color: white;
+
+  &:hover:not(:disabled) {
+    background: var(--color-danger-hover);
+  }
+}
+
+// Form mixins
+@mixin form-input {
+  width: 100%;
+  padding: var(--spacing-xs);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-base);
+  font-family: inherit;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: var(--transition-fast);
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-alpha-10);
+  }
+
+  &::placeholder {
+    color: var(--text-secondary);
+  }
+}
+
+@mixin form-group {
+  margin-bottom: var(--spacing-sm);
+
+  label {
+    display: block;
+    margin-bottom: var(--spacing-xs);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-primary);
+  }
+}
+
+// Panel mixins
+@mixin panel {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+@mixin panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+
+  h2 {
+    margin: 0;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+  }
+}
+
+@mixin panel-body {
+  padding: var(--spacing-md);
+  overflow-y: auto;
+}
+
+@mixin panel-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-top: 1px solid var(--border-color);
+}
+
+// Card mixins
+@mixin card {
+  background: var(--bg-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-fast);
+  overflow: hidden;
+
+  &:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+  }
+}
+
+@mixin card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: var(--spacing-lg);
+  padding-bottom: var(--spacing-md);
+  gap: var(--spacing-md);
+  border-bottom: 1px solid var(--border-color-light);
+}
+
+@mixin card-body {
+  padding: var(--spacing-lg);
+  padding-top: var(--spacing-md);
+}
+
+// Utility mixins
+@mixin page-container {
+  padding: var(--spacing-lg);
+}
+
+@mixin page-container-narrow {
+  @include page-container;
+  max-width: 600px;
+}
+
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@mixin text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// Responsive mixins
+@mixin mobile {
+  @media (max-width: 768px) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (max-width: 1024px) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: 1025px) {
+    @content;
+  }
+}

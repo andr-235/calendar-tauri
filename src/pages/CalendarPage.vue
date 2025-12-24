@@ -62,7 +62,15 @@ const handleSaveCard = async (cardData: Omit<ControlCard, 'id' | 'createdAt'> & 
       cardData.executorUserId,
       cardData.reporter,
       cardData.summary,
-      cardData.documentReference
+      cardData.documentReference,
+      cardData.returnTo,
+      cardData.executionDeadline,
+      cardData.executionPeriodType,
+      cardData.extendedDeadline,
+      cardData.resolution,
+      cardData.department,
+      cardData.controller,
+      cardData.controllerUserId
     )
   } else {
     await createCard(
@@ -71,7 +79,15 @@ const handleSaveCard = async (cardData: Omit<ControlCard, 'id' | 'createdAt'> & 
       cardData.executorUserId,
       cardData.reporter,
       cardData.summary,
-      cardData.documentReference
+      cardData.documentReference,
+      cardData.returnTo,
+      cardData.executionDeadline,
+      cardData.executionPeriodType,
+      cardData.extendedDeadline,
+      cardData.resolution,
+      cardData.department,
+      cardData.controller,
+      cardData.controllerUserId
     )
   }
   showDialog.value = false

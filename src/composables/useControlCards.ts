@@ -14,6 +14,14 @@ interface ControlCardResponse {
   document_reference: string
   executor_user_id?: number | null
   created_at: string
+  return_to?: string | null
+  execution_deadline?: string | null
+  execution_period_type?: string | null
+  extended_deadline?: string | null
+  resolution?: string | null
+  department?: string | null
+  controller?: string | null
+  controller_user_id?: number | null
 }
 
 function mapControlCardResponse(card: ControlCardResponse): ControlCard {
@@ -28,7 +36,15 @@ function mapControlCardResponse(card: ControlCardResponse): ControlCard {
     executorUserId: card.executor_user_id ?? undefined,
     createdAt: card.created_at,
     startDate: card.created_at,
-    endDate: card.created_at
+    endDate: card.created_at,
+    returnTo: card.return_to ?? undefined,
+    executionDeadline: card.execution_deadline ?? undefined,
+    executionPeriodType: (card.execution_period_type as 'daily' | 'weekly' | 'monthly' | undefined) ?? undefined,
+    extendedDeadline: card.extended_deadline ?? undefined,
+    resolution: card.resolution ?? undefined,
+    department: card.department ?? undefined,
+    controller: card.controller ?? undefined,
+    controllerUserId: card.controller_user_id ?? undefined
   }
 }
 
@@ -65,7 +81,10 @@ export function useControlCards() {
   const loadCards = async () => {
     const token = getToken()
     const response = await withLoading(
-      async () => invoke<ControlCardResponse[]>('get_all_control_cards', { token }),
+      async () => {
+        const result = await invoke<ControlCardResponse[]>('get_all_control_cards', { token })
+        return result
+      },
       'Ошибка загрузки контрольных карточек'
     )
     if (response) {
@@ -86,19 +105,38 @@ export function useControlCards() {
     executorUserId: number,
     reporter: string,
     summary: string,
-    documentReference: string
+    documentReference: string,
+    returnTo?: string,
+    executionDeadline?: string,
+    executionPeriodType?: 'daily' | 'weekly' | 'monthly',
+    extendedDeadline?: string,
+    resolution?: string,
+    department?: string,
+    controller?: string,
+    controllerUserId?: number
   ): Promise<ControlCard | null> => {
     const token = getToken()
     const id = await withLoading(
-      async () => invoke<number>('create_control_card', {
+      async () => {
+        const result = await invoke<number>('create_control_card', {
         cardNumber,
         year,
         executorUserId,
         reporter,
         summary,
         documentReference,
+        returnTo,
+        executionDeadline,
+        executionPeriodType,
+        extendedDeadline,
+        resolution,
+        department,
+        controller,
+        controllerUserId,
         token
-      }),
+        })
+        return result
+      },
       'Ошибка создания контрольной карточки'
     )
     if (!id) return null
@@ -116,7 +154,15 @@ export function useControlCards() {
     executorUserId: number,
     reporter: string,
     summary: string,
-    documentReference: string
+    documentReference: string,
+    returnTo?: string,
+    executionDeadline?: string,
+    executionPeriodType?: 'daily' | 'weekly' | 'monthly',
+    extendedDeadline?: string,
+    resolution?: string,
+    department?: string,
+    controller?: string,
+    controllerUserId?: number
   ): Promise<boolean> => {
     const token = getToken()
     const result = await withLoading(
@@ -128,6 +174,14 @@ export function useControlCards() {
         reporter,
         summary,
         documentReference,
+        returnTo,
+        executionDeadline,
+        executionPeriodType,
+        extendedDeadline,
+        resolution,
+        department,
+        controller,
+        controllerUserId,
         token
       }),
       'Ошибка обновления контрольной карточки'
@@ -160,6 +214,15 @@ export function useControlCards() {
     return users || []
   }
 
+  const getUsersForControllerSelection = async (): Promise<User[]> => {
+    const token = getToken()
+    const users = await withLoading(
+      async () => invoke<User[]>('get_users_for_controller_selection', { token }),
+      'Ошибка загрузки списка контроллеров'
+    )
+    return users || []
+  }
+
   return {
     cards,
     loading,
@@ -169,7 +232,8 @@ export function useControlCards() {
     createCard,
     updateCard,
     deleteCard,
-    getUsersForExecutorSelection
+    getUsersForExecutorSelection,
+    getUsersForControllerSelection
   }
 }
 

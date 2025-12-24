@@ -1,3 +1,5 @@
+@use './mixins';
+
 .empty-state {
   padding: var(--spacing-lg, 2rem);
   text-align: center;

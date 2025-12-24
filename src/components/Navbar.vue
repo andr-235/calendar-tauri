@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import { useNavigation } from '../composables/useNavigation'
 import { useAuthStore } from '../stores/auth'
 import '../styles/navbar.scss'
+import '../styles/navbar-component.scss'
 
 const router = useRouter()
 const { navigateTo, isActiveRoute } = useNavigation()
@@ -49,35 +50,4 @@ const handleLogout = () => {
   </nav>
 </template>
 
-<style lang="scss" scoped>
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.navbar-routes {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.navbar-user {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.navbar-username {
-  font-weight: 500;
-}
-
-.navbar-button-logout {
-  background-color: #dc3545;
-  color: white;
-
-  &:hover {
-    background-color: #c82333;
-  }
-}
-</style>
 

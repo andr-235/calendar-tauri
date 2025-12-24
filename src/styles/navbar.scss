@@ -26,21 +26,15 @@
     color: var(--color-primary);
     font-weight: var(--font-weight-medium);
   }
-}
 
-@media (prefers-color-scheme: dark) {
-  .navbar-button {
-    color: rgba(255, 255, 255, 0.7);
+  &.danger {
+    background-color: var(--color-danger-alpha-10);
+    color: var(--color-danger);
 
     &:hover {
-      background-color: var(--bg-overlay-medium);
-      color: rgba(255, 255, 255, 0.9);
-    }
-
-    &.active {
-      background-color: var(--color-primary-alpha-20);
-      color: var(--color-primary-light);
+      background-color: var(--color-danger-alpha-20);
     }
   }
 }
+
 

@@ -1,41 +1,22 @@
+@use './mixins';
+
 .panel {
-  background: var(--bg-primary, #fff);
-  border: 1px solid var(--border-color, #e5e7eb);
-  border-radius: var(--radius-md, 8px);
-  overflow: hidden;
+  @include mixins.panel;
 }
 
 .panel-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: var(--spacing-sm, 1rem) var(--spacing-md, 1.5rem);
-  border-bottom: 1px solid var(--border-color, #e5e7eb);
-  background: var(--bg-secondary, #f9fafb);
-
-  h2 {
-    margin: 0;
-    font-size: var(--font-size-lg, 1.25rem);
-    font-weight: var(--font-weight-semibold, 600);
-  }
+  @include mixins.panel-header;
 }
 
 .panel-body {
-  padding: var(--spacing-md, 1.5rem);
-  overflow-y: auto;
+  @include mixins.panel-body;
 }
 
 .panel-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: var(--spacing-xs, 0.75rem);
-  padding: var(--spacing-sm, 1rem) var(--spacing-md, 1.5rem);
-  border-top: 1px solid var(--border-color, #e5e7eb);
+  @include mixins.panel-footer;
 }
 
 .card {
-  background: var(--bg-primary, #fff);
-  border-radius: var(--radius-md, 8px);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  @include mixins.card;
 }
 

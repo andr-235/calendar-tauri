@@ -1,0 +1,137 @@
+@use './mixins';
+
+.print-card {
+  width: 210mm;
+  margin: 0 auto;
+  padding: 20mm;
+  background: white;
+  color: #000;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 12pt;
+  line-height: 1.5;
+  box-shadow: var(--shadow-md);
+  border: 2px solid #000;
+  position: relative;
+}
+
+.print-card-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 15mm;
+  margin-bottom: 15mm;
+  padding-bottom: 5mm;
+  border-bottom: 1px solid #000;
+}
+
+.print-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 3mm;
+}
+
+.print-header-center {
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.print-header-right {
+  display: flex;
+  flex-direction: column;
+  gap: 5mm;
+  text-align: right;
+}
+
+.print-header-label {
+  font-size: 10pt;
+  font-weight: normal;
+  margin-bottom: 2mm;
+}
+
+.print-header-value {
+  font-size: 11pt;
+  min-height: 5mm;
+}
+
+.print-card-title {
+  margin: 0;
+  font-size: 16pt;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5mm;
+}
+
+.print-header-deadline {
+  display: flex;
+  flex-direction: column;
+  gap: 1mm;
+}
+
+.print-card-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20mm;
+  margin-bottom: 15mm;
+}
+
+.print-card-left,
+.print-card-right {
+  display: flex;
+  flex-direction: column;
+  gap: 8mm;
+}
+
+.print-field {
+  display: flex;
+  flex-direction: row;
+  gap: 3mm;
+  min-height: 8mm;
+  align-items: baseline;
+}
+
+.print-field-label {
+  font-size: 10pt;
+  font-weight: normal;
+  margin-bottom: 1mm;
+}
+
+.print-field-value {
+  font-size: 11pt;
+  min-height: 5mm;
+  word-break: break-word;
+}
+
+.print-card-footer {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2mm;
+  padding-top: 5mm;
+  border-top: 1px solid #000;
+}
+
+.print-footer-label {
+  font-size: 10pt;
+  font-weight: normal;
+}
+
+.print-footer-value {
+  font-size: 11pt;
+  min-height: 5mm;
+}
+
+@media print {
+  .print-card {
+    margin: 0;
+    padding: 20mm;
+    box-shadow: none;
+    page-break-after: always;
+  }
+
+  .print-card-header,
+  .print-card-body,
+  .print-card-footer {
+    page-break-inside: avoid;
+  }
+}

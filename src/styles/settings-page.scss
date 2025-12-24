@@ -1,6 +1,7 @@
+@use './mixins';
+
 .settings-page {
-  padding: var(--spacing-lg);
-  max-width: 600px;
+  @include mixins.page-container-narrow;
 }
 
 .setting-item {
@@ -45,40 +46,8 @@
 }
 
 .btn-select-path {
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border: 1px solid var(--border-color-medium);
-  border-radius: var(--radius-sm);
-  background-color: var(--color-primary);
-  color: white;
-  cursor: pointer;
-  font-size: var(--font-size-base);
+  @include mixins.button-primary;
   white-space: nowrap;
-
-  &:hover:not(:disabled) {
-    background-color: var(--color-primary-dark);
-  }
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
 }
 
-@media (prefers-color-scheme: dark) {
-  .setting-item {
-    select {
-      background-color: rgba(255, 255, 255, 0.1);
-      border-color: var(--border-color-medium);
-      color: white;
-    }
-  }
-
-  .db-path-input {
-    input {
-      background-color: rgba(255, 255, 255, 0.1);
-      border-color: var(--border-color-medium);
-      color: white;
-    }
-  }
-}
 

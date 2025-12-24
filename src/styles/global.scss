@@ -1,15 +1,12 @@
+// Base styles
 @use './variables';
-@use './typography';
-@use './overlay';
-@use './panels';
-@use './lists';
-@use './empty-states';
-@use './utilities';
-@use './buttons';
-@use './forms';
-@use './close-button';
-@use './event-dialog';
-@use './calendar-page';
+@use './base';
+
+// Components
+@use './components';
+
+// Pages
+@use './pages';
 
 :root {
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;

@@ -1,3 +1,5 @@
+@use './mixins';
+
 .users-management-page {
   padding: var(--spacing-lg);
 }

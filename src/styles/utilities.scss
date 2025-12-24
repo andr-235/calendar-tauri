@@ -1,10 +1,11 @@
+@use './mixins';
+
 .page-container {
-  padding: var(--spacing-lg);
+  @include mixins.page-container;
 }
 
 .page-container-narrow {
-  padding: var(--spacing-lg);
-  max-width: 600px;
+  @include mixins.page-container-narrow;
 }
 
 .section {
@@ -27,13 +28,4 @@
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  .info-box {
-    background-color: var(--color-primary-light-alpha-10);
-
-    p {
-      color: var(--color-primary-light);
-    }
-  }
-}
 
